@@ -6,19 +6,44 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct ContentView: View {
+    @Environment(\.modelContext) var modelContext
+    @Query var books : [Book]
+    
+    @State private var showingSheet = false
+    
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        NavigationStack{
+            List{
+                Text("Books : \(books.count)")
+                ForEach(books){book in
+                    VStack(alignment: .leading){
+                        Text(book.author).foregroundStyle(.black)
+                            .font(.headline)
+                        Text(book.title).foregroundStyle(.gray).font(.subheadline)
+                        Text(book.review).foregroundStyle(.gray).font(.subheadline)
+                    }
+                    
+                }
+                   
+            }.sheet(isPresented: $showingSheet){
+                AddBookView()
+            } .navigationTitle("Book Worm").navigationBarTitleDisplayMode(.large)
+                .toolbar{
+                    ToolbarItem(placement: .topBarTrailing){
+                        Button("add", systemImage: "plus"){
+                            showingSheet.toggle()
+                        }
+                    }
+                    
+                }
         }
-        .padding()
     }
 }
 
 #Preview {
     ContentView()
+        .modelContainer(for: Book.self, inMemory: true)
 }
