@@ -10,28 +10,42 @@ import SwiftData
 
 struct ContentView: View {
     @Environment(\.modelContext) var modelContext
-    @Query var books : [Book]
+    @Query(sort:[SortDescriptor(\Book.title),
+                 SortDescriptor(\Book.author),
+                 SortDescriptor(\Book.rating)]) var books : [Book]
     
     @State private var showingSheet = false
     
     var body: some View {
         NavigationStack{
             List{
-                Text("Books : \(books.count)")
                 ForEach(books){book in
-                    VStack(alignment: .leading){
-                        Text(book.author).foregroundStyle(.black)
-                            .font(.headline)
-                        Text(book.title).foregroundStyle(.gray).font(.subheadline)
-                        Text(book.review).foregroundStyle(.gray).font(.subheadline)
+                    NavigationLink(value:book){
+                        HStack{
+                            EmojiView(rating: book.rating).font(.largeTitle)
+                            VStack(alignment: .leading){
+                                Text(book.author).foregroundStyle(.black)
+                                    .font(.headline)
+                                Text(book.title).foregroundStyle(.gray).font(.subheadline)
+                                Text(book.review).foregroundStyle(.gray).font(.subheadline)
+                            }
+                        }
                     }
-                    
-                }
+                }.onDelete(perform: deletebooks)
                    
             }.sheet(isPresented: $showingSheet){
                 AddBookView()
-            } .navigationTitle("Book Worm").navigationBarTitleDisplayMode(.large)
+            }
+            .navigationDestination(for: Book.self){book in
+                DetailView(book: book)
+            }
+            
+            .navigationTitle("Book Worm").navigationBarTitleDisplayMode(.large)
                 .toolbar{
+                    ToolbarItem(placement: .topBarLeading){
+                        EditButton()
+                    }
+                    
                     ToolbarItem(placement: .topBarTrailing){
                         Button("add", systemImage: "plus"){
                             showingSheet.toggle()
@@ -39,6 +53,13 @@ struct ContentView: View {
                     }
                     
                 }
+        }
+    }
+    
+    func deletebooks(at offsets : IndexSet){
+        for offset in offsets{
+            let book = books[offset]
+            modelContext.delete(book)
         }
     }
 }

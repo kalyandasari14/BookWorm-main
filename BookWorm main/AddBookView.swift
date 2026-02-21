@@ -21,7 +21,7 @@ struct AddBookView: View {
     
     var body: some View {
         NavigationStack{
-            Form{
+            List{
                 Section{
                     TextField("Enter your book title", text: $title)
                     TextField("Enter your author", text: $author)
@@ -40,13 +40,15 @@ struct AddBookView: View {
                                 .padding(.top,8)
                         }
                         TextEditor(text: $review).frame(height: 200).scrollContentBackground(.hidden)
-                    }
-                    Picker("Enter your Rating", selection: $rating){
-                        ForEach(0..<6){
-                            Text(String($0))
-                        }
+                        
+                       
                     }
                     
+                    Section{
+                        Rating(rating: $rating)
+                    }
+                   
+                }
                     Section{
                         Button("save"){
                             let newBook = Book(title: title, author: author, genre: genre, review: review, rating: rating)
@@ -54,7 +56,7 @@ struct AddBookView: View {
                             dismiss()
                         }
                     }
-                }
+                
             }.navigationTitle("Add Book").navigationBarTitleDisplayMode(.inline)
         }
        
