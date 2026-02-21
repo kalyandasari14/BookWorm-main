@@ -55,12 +55,13 @@ struct AddBookView: View {
                             modelContext.insert(newBook)
                             dismiss()
                         }
-                    }
+                    }.disabled( title.isEmpty || author.isEmpty || review.isEmpty)
                 
             }.navigationTitle("Add Book").navigationBarTitleDisplayMode(.inline)
         }
        
     }
+    
 }
 
 #Preview {

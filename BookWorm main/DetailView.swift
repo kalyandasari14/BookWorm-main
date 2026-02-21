@@ -30,18 +30,22 @@ struct DetailView: View {
                     .foregroundStyle(.white)
                 
                 
+                
+                
                     
                 
             }
-            Text(book.author).font(.title)
-                .foregroundStyle(.secondary)
-             Spacer()
-            Text(book.review).font(.caption)
-                .foregroundStyle(.black)
-            Spacer()
-          
-            Rating(rating: .constant(book.rating))
-                .font(.largeTitle)
+            VStack(alignment: .leading, spacing: 8){
+                Text(book.author).font(.title)
+                    .foregroundStyle(.secondary)
+             
+                Text(book.review).font(.body)
+                    .foregroundStyle(.black)
+            
+                Rating(rating: .constant(book.rating))
+                    .font(.largeTitle)
+                
+                Text("Added on:\(book.date.formatted(date:.abbreviated, time: .omitted))")}
             
         }.navigationTitle(book.title)
             .navigationBarTitleDisplayMode(.inline)

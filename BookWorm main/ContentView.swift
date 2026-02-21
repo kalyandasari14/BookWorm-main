@@ -26,16 +26,18 @@ struct ContentView: View {
                             VStack(alignment: .leading){
                                 Text(book.author).foregroundStyle(.black)
                                     .font(.headline)
-                                Text(book.title).foregroundStyle(.gray).font(.subheadline)
+                                Text(book.title).foregroundStyle(book.rating == 1 ? .yellow : .gray).font(.subheadline)
                                 Text(book.review).foregroundStyle(.gray).font(.subheadline)
                             }
                         }
-                    }
+                    }.background(book.rating == 1 ? .red : .primary)
                 }.onDelete(perform: deletebooks)
                    
             }.sheet(isPresented: $showingSheet){
                 AddBookView()
+                    
             }
+            
             .navigationDestination(for: Book.self){book in
                 DetailView(book: book)
             }
@@ -48,7 +50,7 @@ struct ContentView: View {
                     
                     ToolbarItem(placement: .topBarTrailing){
                         Button("add", systemImage: "plus"){
-                            showingSheet.toggle()
+                            showingSheet = true
                         }
                     }
                     
